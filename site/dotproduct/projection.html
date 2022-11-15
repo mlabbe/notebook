@@ -3,19 +3,34 @@
     <meta charset="utf-8">
     <title>Mike's Sketchbook - Dot Product</title>
     <script defer src="/p5.js" content-type="text/javascript"></script>
+    <script defer src="/sketchlib.js" content-type="text/javascript"></script>
     <script defer src="projection.js"  content-type="text/javascript"></script>
   </head>
 
   <body>
-    # Projection Properties of a Dot Product #
+    # Projection Property of a Dot Product #
 
 For a given unit vector $\hat{a}$, project onto $b$.
 
-$\hat{a} \cdot b$ produces the *signed* length that can be scaled by $\hat{a}$ to produce a vector that is the length of $b$, but with the orientation of $\hat{a}$.
+$\hat{a} \cdot b$ produces the *signed* length that can be scaled by $\hat{a}$ to produce a 
+vector that is the length of $b$, but with the orientation of $\hat{a}$.
 
 $p = \hat{a} * (\hat{a} \cdot b)$
     <main></main>
+    
+    ## C Pseudocode ##
+~~~~~~~~~~~~~ c++
+    // project a onto b
 
+    vec2 a, b, out_projected;
+    {
+        // assumes magnitude of a != 0
+        normalize(a, a);
+
+        real signed_length = dot(a, b);
+        out_projected = mul(a, signed_length);
+    }
+~~~~~~~~~~~~~
 
     [back](/index.html)
   </body>
