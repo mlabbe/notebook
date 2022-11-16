@@ -19,13 +19,13 @@ $p = \hat{a} * (\hat{a} \cdot b)$
     <main></main>
     
     ## C Pseudocode ##
-~~~~~~~~~~~~~ c++
+~~~~~~~~~~~~~ c
     // project a onto b
 
     vec2 a, b, out_projected;
     {
-        // assumes magnitude of a != 0
-        normalize(a, a);
+        // assumes magnitude of a is > 0
+        a = normalize(a);
 
         real signed_length = dot(a, b);
         out_projected = mul(a, signed_length);

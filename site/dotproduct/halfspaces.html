@@ -3,6 +3,7 @@
     <meta charset="utf-8">
     <title>Mike's Sketchbook - Dot Product</title>
     <script defer src="/p5.min.js" content-type="text/javascript"></script>    
+    <script defer src="/sketchlib.js" content-type="text/javascript"></script>    
     <script defer src="halfspaces.js"  content-type="text/javascript"></script>
   </head>
 
@@ -14,6 +15,18 @@
     If $\hat{a} \cdot b > 0$, $b$ is front-facing.  Otherwise, it is back-facing.    
     <main></main>
 
+    ## C Pseudocode ##
+~~~~~~~~~~~~~ c
+    // determine which halfspace of a that b is in
+    vec2 a, b;
+    bool out_is_front_facing;
+    {
+        a = normalize(a);
+        real a_dot_b = dot(a, b);
+
+        out_is_front_facing = a_dot_b >= 0;
+    }
+~~~~~~~~~~~~~
 
     [back](/index.html)
   </body>

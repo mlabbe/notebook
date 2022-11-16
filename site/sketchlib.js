@@ -1,10 +1,13 @@
-function sketchVectorFromVec(vec, col, scale, is_pickable) {
+let draw_labels_on_sketch_vectors = false;
+
+function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
     let CLICK_RADIUS = 7.0;
 
     this.vec = vec;
     this.col = col;
     this.scale = scale;
     this.is_pickable = is_pickable;
+    this.label = label;
     
     this.drawCentered = function(is_selected) {
         if (is_selected)
@@ -29,11 +32,16 @@ function sketchVectorFromVec(vec, col, scale, is_pickable) {
             circle(mid.x + w.x, mid.y + w.y, CLICK_RADIUS);
         }
 
+        if (draw_labels_on_sketch_vectors) {
+            noStroke();
+            fill(this.col);
+            text(this.label, mid.x + w.x + 10, mid.y + w.y);
+        }
 
         strokeWeight(1);
     };
 
-    this.printVec2 = function(label, offset) {
+    this.printVec2 = function(offset) {
         noStroke();
         fill(this.col);
 
@@ -41,7 +49,7 @@ function sketchVectorFromVec(vec, col, scale, is_pickable) {
         text("" + this.vec.x.toFixed(2) + ", " + this.vec.y.toFixed(2) + "", 10, y);
 
         stroke(this.col);        
-        text(label, 150, y);
+        text(this.label, 150, y);
     };
 
     this.clickTest = function() {
@@ -49,11 +57,13 @@ function sketchVectorFromVec(vec, col, scale, is_pickable) {
         
         // take into account the visual scale of this vector for the click test
         let w = p5.Vector.mult(this.vec, this.scale);
+        let mid = createVector(width/2, height/2);
 
         let worldVec = createVector(w.x + mid.x, w.y + mid.y);
 
         let d = p5.Vector.sub(mouse, worldVec).mag();
         //console.log(d <= CLICK_RADIUS);
+
         return d <= CLICK_RADIUS;
     }
 
@@ -76,6 +86,7 @@ function pickTool() {
 
         for (let i = 0; i < this.clickables.length; i++) {
             let was_clicked = this.clickables[i].clickTest();
+            
             if (was_clicked) {
                 // selecting the current selection is just clicking to de-select
                 if (last_selection !== this.clickables[i])
@@ -84,6 +95,7 @@ function pickTool() {
             }            
         }
 
+        //console.log(this.currentSelection);
     };
 
     this.getCurrentSelection = function() {

@@ -6,11 +6,12 @@ let pick_tool = null;
 
 function setup() {
     createCanvas(640, 480);
-    cursor(CROSS);
 
     mid = createVector(width/2, height/2);
-    a = new sketchVectorFromVec(createVector(0, 0), getNextColor(), 25.0, true);
-    b = new sketchVectorFromVec(createVector(0, 30), getNextColor(), 1.0, true);
+    a = new sketchVectorFromVec(createVector(1, 0), 
+        getNextColor(), 50.0, true, "a normalized");
+    b = new sketchVectorFromVec(createVector(0, 30), 
+        getNextColor(), 1.0, true, "b");
 
     c_color = getNextColor();
 
@@ -43,18 +44,19 @@ function draw() {
     //
     a.vec.normalize();
     let signed_length = p5.Vector.dot(a.vec, b.vec);
-    let a_dot_b = new sketchVectorFromVec(p5.Vector.mult(a.vec, signed_length), c_color, 1.0, false);
+    let a_dot_b = new sketchVectorFromVec(p5.Vector.mult(a.vec, signed_length), 
+        c_color, 1.0, false, "a * dot(a, b)");
     
 
     //
     // graph 'em
     //
-    a.printVec2("a normalized", 1);
+    a.printVec2(1);
     a.drawCentered(pick_tool.getCurrentSelection() == a);
 
-    b.printVec2("b", 2);
+    b.printVec2(2);
     b.drawCentered(pick_tool.getCurrentSelection() == b);
 
-    a_dot_b.printVec2("a * dot(a, b)", 3);
+    a_dot_b.printVec2(3);
     a_dot_b.drawCentered(false);
 }
