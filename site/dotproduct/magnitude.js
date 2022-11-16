@@ -1,6 +1,7 @@
 let mid = null;
 let a = null;
 let pick_tool = null;
+draw_labels_on_sketch_vectors = true;
 
 function setup() {
     setupCommon();

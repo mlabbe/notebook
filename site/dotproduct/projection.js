@@ -5,7 +5,7 @@ let c_color = null;
 let pick_tool = null;
 
 function setup() {
-    createCanvas(640, 480);
+    setupCommon();
 
     mid = createVector(width/2, height/2);
     a = new sketchVectorFromVec(createVector(1, 0), 
@@ -17,9 +17,6 @@ function setup() {
 
     pick_tool = new pickTool();
     pick_tool.clickables = [a, b];
-
-    textSize(18);
-
 }
 
 function mouseClicked() {

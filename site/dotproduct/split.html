@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mike's Sketchbook - Dot Product</title>
+    <script defer src="../p5.js" content-type="text/javascript"></script>
+    <script defer src="../sketchlib.js" content-type="text/javascript"></script>
+    <script defer src="split.js" content-type="text/javascript"></script>
+  </head>
+
+  <body>
+    # Split Vector into Parallel and Perpendicular Parts #
+
+    It's possible to "sift" the parallel and perpendicular components of a vector, using projection against a constant unit vector.
+    
+    Once you have the parallel component with
+    
+    $b_{||} = (\hat{a} \cdot b)\hat{a}$
+    
+    you can get the perpendicular component with
+    
+    $b_{\perp} = b - b_{||}$,
+    
+    $b_{\perp} = b - (\hat{a} \cdot b)\hat{a}$        
+    <main></main>
+
+    ## Pseudocode ##
+~~~~~~~~~~~~~ c
+    // derive b's parallel vector
+    vec2 a_norm, b, out_b_parallel;
+    {
+        // assume a is normalized
+        real a_dot_b = dot(a_norm, b);
+        out_b_parallel = mult(a, a_dot_b);
+    }
+
+    // derive b's perpendicular vector
+    vec2 b, b_parallel, out_b_perpendicular;
+    {
+        out_b_perpendicular = sub(b, b_parallel);
+    }
+~~~~~~~~~~~~~
+
+    [back](../index.html)    
+    </body>
+</html>
+<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="../markdeep.min.js" charset="utf-8"></script>
