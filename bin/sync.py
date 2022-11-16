@@ -47,6 +47,3 @@ if __name__ == '__main__':
 
     s3_sync()
     cloudfront_invalidate()
-
-    #aws s3 sync --profile=ftg $(OUTPUTDIR)/ s3://$(S3_BUCKET)/labs --delete --acl public-read
-    #run(['aws', 's3', 'ls'])
