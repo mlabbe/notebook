@@ -23,8 +23,8 @@ function setup() {
     a = new sketchVectorFromVec(createVector(1, 0), getNextColor(), SCALE, true, "a");
     b = new sketchVectorFromVec(createVector(125, 150), getNextColor(), 1.0, true, "b");
 
-    positive_color = getNextColor();//color(0, 192, 0);
-    negative_color = getNextColor();//color(192, 0, 0);
+    positive_color = getNextColor();
+    negative_color = getNextColor();
     
     pick_tool = new pickTool();
     pick_tool.clickables = [a, b];
@@ -45,8 +45,7 @@ function draw() {
 
     let selected_vec = pick_tool.getCurrentSelection();
     if (selected_vec != null) {
-        selected_vec.vec.x = mouseX - mid.x;
-        selected_vec.vec.y = mouseY - mid.y;
+        selected_vec.vec = centeredPVectorFromMouse();
     }
 
     //

@@ -10,7 +10,7 @@ function setup() {
     mid = createVector(width/2, height/2);
     a = new sketchVectorFromVec(createVector(1, 0), 
         getNextColor(), 50.0, true, "a normalized");
-    b = new sketchVectorFromVec(createVector(0, 30), 
+    b = new sketchVectorFromVec(createVector(-120, 120), 
         getNextColor(), 1.0, true, "b");
 
     c_color = getNextColor();
@@ -32,8 +32,7 @@ function draw() {
 
     let selected_vec = pick_tool.getCurrentSelection();
     if (selected_vec != null) {
-        selected_vec.vec.x = mouseX - mid.x;
-        selected_vec.vec.y = mouseY - mid.y;
+        selected_vec.vec = centeredPVectorFromMouse();
     }
 
     pick_tool.setCursor();

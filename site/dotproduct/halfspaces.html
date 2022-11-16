@@ -15,7 +15,7 @@
     If $\hat{a} \cdot b > 0$, $b$ is front-facing.  Otherwise, it is back-facing.    
     <main></main>
 
-    ## C Pseudocode ##
+    ## Pseudocode ##
 ~~~~~~~~~~~~~ c
     // determine which halfspace of a that b is in
     vec2 a, b;
@@ -24,7 +24,7 @@
         a = normalize(a);
         real a_dot_b = dot(a, b);
 
-        out_is_front_facing = a_dot_b >= 0;
+        out_is_front_facing = a_dot_b > 0;
     }
 ~~~~~~~~~~~~~
 

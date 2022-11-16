@@ -41,11 +41,11 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
         strokeWeight(1);
     };
 
-    this.printVec2 = function(offset) {
+    this.printVec2 = function(increment) {
         noStroke();
         fill(this.col);
 
-        let y = 10 + (offset * 25);
+        let y = getTextY(increment);
         text("" + this.vec.x.toFixed(2) + ", " + this.vec.y.toFixed(2) + "", 10, y);
 
         stroke(this.col);        
@@ -68,6 +68,16 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
     }
 
     return this;
+}
+
+// convention to increment text vertically
+function getTextY(increment) {
+    return 10 + (increment * 25);
+}
+
+function setupCommon() {
+    createCanvas(640, 480);
+    textSize(18);
 }
 
 function pickTool() {
@@ -99,19 +109,47 @@ function pickTool() {
     };
 
     this.getCurrentSelection = function() {
+
         // null if no selection
         return this.currentSelection;
     }
 
     // call in draw to set the cursor
     this.setCursor = function() {
-        if (this.currentSelection == null)
-            cursor(CROSS);
-        else
+        if (this.currentSelection == null) {
+            for (let i = 0; i < this.clickables.length; i++) {
+
+                if (this.clickables[i].clickTest()) {
+                    cursor(HAND);
+                    return;
+                }
+            }
+
+            cursor(ARROW);
+        }   
+        else {
             noCursor();
+        }
     };
 
     return this;
+}
+
+function centeredPVectorFromMouse() {
+    let v = createVector(mouseX, mouseY);
+    let mid = createVector(width/2, height/2);    
+    v.sub(mid);
+
+    // constrain vector length to sketch window
+    let c = Math.min(mid.x, mid.y);
+    c *= 0.95;
+
+    if (v.mag() > c) { 
+        v.normalize();
+        v.mult(c);
+    }
+
+    return v;
 }
 
 function drawGrid() {
