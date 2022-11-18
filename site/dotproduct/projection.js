@@ -53,6 +53,9 @@ function draw() {
     b.printVec2(2);
     b.drawCentered(pick_tool.getCurrentSelection() == b);
 
-    a_dot_b.printVec2(3);
+    printScalar(3, a_dot_b.col, signed_length, "dot(a, b)");
+
+    a_dot_b.printVec2(4);
     a_dot_b.drawCentered(false);
+
 }

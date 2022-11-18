@@ -36,9 +36,5 @@ function draw() {
     a.printVec2(1);
     a.drawCentered(pick_tool.getCurrentSelection() == a);
 
-    noStroke();
-    fill(a.col);
-    text(length.toFixed(2), 10, getTextY(2));
-    stroke(a.col);
-    text("sqrt(dot(a, a))", 150, getTextY(2));
+    printScalar(2, a.col, length, "sqrt(dot(a, a))");
 }

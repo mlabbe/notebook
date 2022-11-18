@@ -8,23 +8,23 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
     this.scale = scale;
     this.is_pickable = is_pickable;
     this.label = label;
-    
-    this.drawCentered = function(is_selected) {
+
+    this.drawCentered = function (is_selected) {
         if (is_selected)
             strokeWeight(3);
         else
             strokeWeight(1);
 
         stroke(this.col);
-        
+
         let w = p5.Vector.mult(this.vec, this.scale);
 
-        let mid = createVector(width/2, height/2);
+        let mid = createVector(width / 2, height / 2);
         line(mid.x, mid.y,
-             mid.x + w.x, mid.y + w.y);
+            mid.x + w.x, mid.y + w.y);
 
         if (this.is_pickable) {
-            if (is_selected) 
+            if (is_selected)
                 fill(this.col);
             else
                 noFill();
@@ -41,23 +41,23 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
         strokeWeight(1);
     };
 
-    this.printVec2 = function(increment) {
+    this.printVec2 = function (increment) {
         noStroke();
         fill(this.col);
 
         let y = getTextY(increment);
         text("" + this.vec.x.toFixed(2) + ", " + this.vec.y.toFixed(2) + "", 10, y);
 
-        stroke(this.col);        
-        text(this.label, 150, y);
+        stroke(this.col);
+        text(this.label, 250, y);
     };
 
-    this.clickTest = function() {
+    this.clickTest = function () {
         let mouse = createVector(mouseX, mouseY);
-        
+
         // take into account the visual scale of this vector for the click test
         let w = p5.Vector.mult(this.vec, this.scale);
-        let mid = createVector(width/2, height/2);
+        let mid = createVector(width / 2, height / 2);
 
         let worldVec = createVector(w.x + mid.x, w.y + mid.y);
 
@@ -68,6 +68,17 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
     }
 
     return this;
+}
+
+function printScalar(increment, col, scalar, label) {
+    noStroke();
+    fill(col);
+
+    let y = getTextY(increment);
+    text(scalar.toFixed(2), 10, y);
+
+    stroke(col);
+    text(label, 250, y);
 }
 
 // convention to increment text vertically
@@ -86,7 +97,7 @@ function pickTool() {
     this.clickables = [];
 
     // call in mouseClicked function
-    this.mouseClicked = function() {
+    this.mouseClicked = function () {
 
         let clicked = [];
         let has_any_been_clicked = false;
@@ -96,26 +107,26 @@ function pickTool() {
 
         for (let i = 0; i < this.clickables.length; i++) {
             let was_clicked = this.clickables[i].clickTest();
-            
+
             if (was_clicked) {
                 // selecting the current selection is just clicking to de-select
                 if (last_selection !== this.clickables[i])
                     this.currentSelection = this.clickables[i];
                 break;
-            }            
+            }
         }
 
         //console.log(this.currentSelection);
     };
 
-    this.getCurrentSelection = function() {
+    this.getCurrentSelection = function () {
 
         // null if no selection
         return this.currentSelection;
     }
 
     // call in draw to set the cursor
-    this.setCursor = function() {
+    this.setCursor = function () {
         if (this.currentSelection == null) {
             for (let i = 0; i < this.clickables.length; i++) {
 
@@ -126,7 +137,7 @@ function pickTool() {
             }
 
             cursor(ARROW);
-        }   
+        }
         else {
             noCursor();
         }
@@ -137,14 +148,14 @@ function pickTool() {
 
 function centeredPVectorFromMouse() {
     let v = createVector(mouseX, mouseY);
-    let mid = createVector(width/2, height/2);    
+    let mid = createVector(width / 2, height / 2);
     v.sub(mid);
 
     // constrain vector length to sketch window
     let c = Math.min(mid.x, mid.y);
     c *= 0.95;
 
-    if (v.mag() > c) { 
+    if (v.mag() > c) {
         v.normalize();
         v.mult(c);
     }
@@ -155,17 +166,17 @@ function centeredPVectorFromMouse() {
 function drawGrid() {
     background(250);
 
-    let drawGridStep = function(subdiv, step_start_div) {
+    let drawGridStep = function (subdiv, step_start_div) {
         let x_step = width / subdiv;
-    
+
         for (let x = x_step / step_start_div; x < width; x += x_step) {
             line(x, 0, x, height);
         }
-    
+
         let y_step = height / subdiv;
         for (let y = y_step / step_start_div; y < height; y += y_step) {
-            line(0, y, width, y);            
-        }   
+            line(0, y, width, y);
+        }
     }
 
     stroke(230);
@@ -175,7 +186,7 @@ function drawGrid() {
 // only call from setup()
 let static_color_index = 0;
 function getNextColor() {
-    const colors = ["#63a4c5", "#f29a00", "#64555c", "#f0cf6e", "#df9a4b", "#00645c", ];
+    const colors = ["#63a4c5", "#f29a00", "#64555c", "#f0cf6e", "#df9a4b", "#00645c",];
 
     if (static_color_index == colors.length)
         static_color_index = 0;
