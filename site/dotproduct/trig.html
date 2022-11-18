@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mike's Sketchbook - Dot Product</title>
+    <script defer src="../p5.js" content-type="text/javascript"></script>
+    <script defer src="../sketchlib.js" content-type="text/javascript"></script>
+    <script defer src="trig.js" content-type="text/javascript"></script>
+  </head>
+
+  <body>
+    # Trigonometric Properties of the Dot Product #
+
+    [Trig Function Review](https://gamemath.com/book/cartesianspace.html#trig_functions)
+    
+    The dot product of two unit vectors is equal to the cosine of the angle between them.
+    
+    ## Cosine of the Angle ##
+    
+    $cos \theta = \frac{adjacent}{hyponetuse} = \frac{\hat{a} \cdot \hat{b}}{1} = \hat{a} \cdot \hat{b}$
+    
+    Cosine of the angle can be analyzed to determine geometric vector properties:
+    
+     - `> 0` means `[0° - 90°]` (acute)
+     - `0` means  `90°` (right)
+     - `< 0` means `[90° - 180°]` (obtuse)
+    
+    ## Derive The Angle ##
+    
+    The angle (in radians, of course) can be computed from two normalized vectors with:
+    
+    $\theta = arccos(\hat{a} \cdot \hat{b})$
+    
+    If the vectors are not normalized, divide by the length of $a$ and $b$:
+    
+    $\theta = arccos(\frac{\vec{a} \cdot \vec{b}}{||a|| ||b||})$    
+
+    # Interactive Demo # 
+
+    <main></main>
+
+    # Pseudocode #
+~~~~~~~~~~~~~ c
+    // a and b are normalized
+    vec2 a, b;
+    real out_radians;
+    {
+        real cos_theta = dot(a, b);
+        out_radians = acos(cos_theta);
+    }
+
+    // a and b are not normalized
+    vec2 a, b;
+    real out_radians;
+    {
+        real length = magnitude(a) * magnitude(b);
+        real cos_theta = dot(a, b) / length;
+        out_radians = acos(cos_theta);
+    }
+~~~~~~~~~~~~~
+
+    [back](../index.html)    
+    </body>
+</html>
+<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="../markdeep.min.js" charset="utf-8"></script>

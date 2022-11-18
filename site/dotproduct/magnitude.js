@@ -7,7 +7,7 @@ function setup() {
     setupCommon();
     
     mid = createVector(width/2, height/2);    
-    a = new sketchVectorFromVec(createVector(0, 0),
+    a = new sketchVectorFromVec(createVector(100, -100),
         getNextColor(), 1.0, true, "a");
 
     pick_tool = new pickTool();
