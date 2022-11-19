@@ -59,52 +59,7 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
         pop();
         
     };
-
-    this.drawCenteredOld = function (is_selected) {        
-        stroke(this.col);
-
-        let is_mouse_in_sketch = 
-            (mouseX > 0 && mouseX <= width &&
-             mouseY > 0 && mouseY <= height);
-        if (is_mouse_in_sketch && this.is_pickable) {
-            if (is_selected)
-                strokeWeight(3);
-            else
-                strokeWeight(2);
-            
-        }
-        else {
-            strokeWeight(1);
-        }
-
-
-        let w = p5.Vector.mult(this.vec, this.scale);
-
-        let mid = createVector(width / 2, height / 2);
-        line(mid.x, mid.y,
-            mid.x + w.x, mid.y + w.y);
-
-        if (this.is_pickable) {
-            if (is_selected)
-                fill(this.col);
-            else
-                noFill();
-
-            circle(mid.x + w.x, mid.y + w.y, CLICK_RADIUS_SQUARED);
-        }
-
-        translate(vec.mag() - 7, 0);
-
-
-        if (draw_labels_on_sketch_vectors) {
-            noStroke();
-            fill(this.col);
-            text(this.label, mid.x + w.x + 10, mid.y + w.y);
-        }
-
-        strokeWeight(1);
-    };
-
+    
     this.printVec2 = function (increment) {
         noStroke();
         fill(this.col);
