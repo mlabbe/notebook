@@ -71,6 +71,8 @@ function draw() {
     fill(0);
     text(a_dot_b.toFixed(2) + " dot(a, b)", 10, 25);
 
+    noStroke();
+
     if (a_dot_b < 0) {
         fill(negative_color);
         text("negative back-facing halfspace", 10, 50);
@@ -81,6 +83,7 @@ function draw() {
         stroke(positive_color);
     }
     
+    strokeWeight(2);
     line(mid.x, mid.y, cross_top.x, cross_top.y);
     line(mid.x, mid.y, cross_bottom.x, cross_bottom.y);
 }

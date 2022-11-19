@@ -1,7 +1,26 @@
 let draw_labels_on_sketch_vectors = false;
 
+// return the sqdist between c and segment ab
+function sqDistPointSegment(a, b, c) {
+    let ab = p5.Vector.sub(b, a);
+    let ac = p5.Vector.sub(c, a);
+    let bc = p5.Vector.sub(c, b);
+
+    let e = p5.Vector.dot(ac, ab);
+
+    // c projects outside ab
+    if (e <= 0) return p5.Vector.dot(ac, ac);
+
+    let f = p5.Vector.dot(ab, ab);
+    if (e >= f)
+        return p5.Vector.dot(bc, bc);
+
+    // handle cases where c projects onto ab
+    return p5.Vector.dot(ac, ac) - e * e / f;
+}
+
 function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
-    let CLICK_RADIUS = 7.0;
+    let CLICK_RADIUS_SQUARED = 7.0 * 7.0;
 
     this.vec = vec;
     this.col = col;
@@ -10,12 +29,54 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
     this.label = label;
 
     this.drawCentered = function (is_selected) {
-        if (is_selected)
-            strokeWeight(3);
-        else
+        let is_mouse_in_sketch = 
+            (mouseX > 0 && mouseX <= width &&
+             mouseY > 0 && mouseY <= height);
+        if (is_mouse_in_sketch && this.is_pickable) {
+            if (is_selected)
+                strokeWeight(3);
+            else
+                strokeWeight(2);
+            
+        } else {
             strokeWeight(1);
+        }
 
+        push();
         stroke(this.col);
+        
+        //strokeWeight(3);
+        fill(this.col);
+        translate(width / 2, height / 2);
+        line(0, 0, this.vec.x * this.scale, this.vec.y * this.scale);
+        if (this.is_pickable) {
+            rotate(this.vec.heading());
+            let arrowSize = 7;
+            translate((this.vec.mag() * this.scale) - arrowSize, 0);
+            triangle(0, arrowSize / 2, 0, 
+                -arrowSize / 2, arrowSize, 0);
+        }
+        pop();
+        
+    };
+
+    this.drawCenteredOld = function (is_selected) {        
+        stroke(this.col);
+
+        let is_mouse_in_sketch = 
+            (mouseX > 0 && mouseX <= width &&
+             mouseY > 0 && mouseY <= height);
+        if (is_mouse_in_sketch && this.is_pickable) {
+            if (is_selected)
+                strokeWeight(3);
+            else
+                strokeWeight(2);
+            
+        }
+        else {
+            strokeWeight(1);
+        }
+
 
         let w = p5.Vector.mult(this.vec, this.scale);
 
@@ -29,8 +90,11 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
             else
                 noFill();
 
-            circle(mid.x + w.x, mid.y + w.y, CLICK_RADIUS);
+            circle(mid.x + w.x, mid.y + w.y, CLICK_RADIUS_SQUARED);
         }
+
+        translate(vec.mag() - 7, 0);
+
 
         if (draw_labels_on_sketch_vectors) {
             noStroke();
@@ -48,23 +112,18 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
         let y = getTextY(increment);
         text("" + this.vec.x.toFixed(2) + ", " + this.vec.y.toFixed(2) + "", 10, y);
 
+        strokeWeight(1);
         stroke(this.col);
         text(this.label, 250, y);
     };
 
     this.clickTest = function () {
-        let mouse = createVector(mouseX, mouseY);
-
-        // take into account the visual scale of this vector for the click test
-        let w = p5.Vector.mult(this.vec, this.scale);
         let mid = createVector(width / 2, height / 2);
+        let mouse = createVector(mouseX - mid.x, mouseY - mid.y);
 
-        let worldVec = createVector(w.x + mid.x, w.y + mid.y);
+        let d = sqDistPointSegment(0, p5.Vector.mult(this.vec, this.scale), mouse);
 
-        let d = p5.Vector.sub(mouse, worldVec).mag();
-        //console.log(d <= CLICK_RADIUS);
-
-        return d <= CLICK_RADIUS;
+        return (d <= CLICK_RADIUS_SQUARED);
     }
 
     return this;
@@ -78,6 +137,7 @@ function printScalar(increment, col, scalar, label) {
     text(scalar.toFixed(2), 10, y);
 
     stroke(col);
+    strokeWeight(1);
     text(label, 250, y);
 }
 
@@ -165,6 +225,7 @@ function centeredPVectorFromMouse() {
 
 function drawGrid() {
     background(250);
+    strokeWeight(1);
 
     let drawGridStep = function (subdiv, step_start_div) {
         let x_step = width / subdiv;
