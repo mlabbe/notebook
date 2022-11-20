@@ -43,7 +43,5 @@ def cloudfront_invalidate():
     run(args)
 
 if __name__ == '__main__':
-    os.chdir(get_site_root_path())
-
     s3_sync()
     cloudfront_invalidate()
