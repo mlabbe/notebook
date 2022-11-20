@@ -202,7 +202,7 @@ function drawGrid() {
 // only call from setup()
 let static_color_index = 0;
 function getNextColor() {
-    const colors = ["#63a4c5", "#f29a00", "#64555c", "#f0cf6e", "#df9a4b", "#00645c",];
+    const colors = ["#63a4c5", "#f29a00", "#64555c", "#d45025", "#df9a4b", "#00645c"];
 
     if (static_color_index == colors.length)
         static_color_index = 0;
