@@ -5,7 +5,7 @@ import subprocess
 
 PROFILE_NAME='default'
 S3_BUCKET='www.michaellabbe.com'
-DISTRIBUTION_ID='E37B4W5A3UNR7B'
+DISTRIBUTION_ID='E208J8IRBWTAQW'
 
 def fatal(msg):
     print(msg, file=sys.stderr)
