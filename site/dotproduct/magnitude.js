@@ -14,9 +14,18 @@ function setup() {
     pick_tool.clickables = [a];
 }
 
-function mouseClicked() {
-    pick_tool.mouseClicked();
+function mousePressed() {
+    pick_tool.mousePressed();
 }
+
+function mouseReleased() {
+    pick_tool.mouseReleased();
+}
+
+function touchMoved() {
+    return pick_tool.shouldPreventScrolling();
+}
+
 
 function draw() {
     drawGrid();

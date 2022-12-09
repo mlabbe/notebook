@@ -20,7 +20,7 @@ function sqDistPointSegment(a, b, c) {
 }
 
 function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
-    let CLICK_RADIUS_SQUARED = 7.0 * 7.0;
+    let CLICK_RADIUS_SQUARED = 10.0 * 10.0;
 
     this.vec = vec;
     this.col = col;
@@ -111,34 +111,38 @@ function pickTool() {
     this.currentSelection = null;
     this.clickables = [];
 
-    // call in mouseClicked function
-    this.mouseClicked = function () {
+    this.mousePressed = function () {
 
         let clicked = [];
         let has_any_been_clicked = false;
 
-        let last_selection = this.currentSelection;
+        //let last_selection = this.currentSelection;
         this.currentSelection = null;
 
         for (let i = 0; i < this.clickables.length; i++) {
             let was_clicked = this.clickables[i].clickTest();
 
             if (was_clicked) {
+                this.currentSelection = this.clickables[i];
+                /*
                 // selecting the current selection is just clicking to de-select
                 if (last_selection !== this.clickables[i])
                     this.currentSelection = this.clickables[i];
+                    */
                 break;
             }
         }
-
-        //console.log(this.currentSelection);
     };
 
-    this.getCurrentSelection = function () {
+    this.mouseReleased = function() {
+        this.currentSelection = null;
+    };
+
+    this.getCurrentSelection = function() {
 
         // null if no selection
         return this.currentSelection;
-    }
+    };
 
     // call in draw to set the cursor
     this.setCursor = function () {
@@ -157,6 +161,10 @@ function pickTool() {
             noCursor();
         }
     };
+
+    this.shouldPreventScrolling = function() {
+        return this.currentSelection == null;
+    }
 
     return this;
 }
