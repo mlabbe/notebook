@@ -42,8 +42,12 @@ function draw() {
     //
     let length = Math.sqrt(p5.Vector.dot(a.vec, a.vec));
 
-    a.printVec2(1);
-    a.drawCentered(pick_tool.getCurrentSelection() == a);
+    //
+    // graph 'em
+    //
+    a.drawCentered(pick_tool.getCurrentSelection() == a);    
 
-    printScalar(2, a.col, length, "sqrt(dot(a, a))");
+    drawTextBackground(2);
+    a.printVec2(1);    
+    printScalar(2, a.col, length, "sqrt(dot(a, a))");    
 }

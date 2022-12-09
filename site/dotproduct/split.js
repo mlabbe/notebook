@@ -62,18 +62,18 @@ function draw() {
     // perpendicular
     b_perp.vec = p5.Vector.sub(b.vec, b_parallel.vec);
     
-
-    a.printVec2(1);
+    //
+    // graph 'em
+    // 
     a.drawCentered(pick_tool.getCurrentSelection() == a);
-
-
-    b.printVec2(2);
     b.drawCentered(pick_tool.getCurrentSelection() == b);
-
-    b_parallel.printVec2(3);
     b_parallel.drawCentered(false);
-
-    b_perp.printVec2(4);
     b_perp.drawCentered(false);
+
+    drawTextBackground(4);
+    a.printVec2(1);
+    b.printVec2(2);
+    b_parallel.printVec2(3);
+    b_perp.printVec2(4);
 
 }

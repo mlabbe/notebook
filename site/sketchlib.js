@@ -1,5 +1,14 @@
 let draw_labels_on_sketch_vectors = false;
 
+let VALUE_COLUMN = 140;
+let LABEL_COLUMN = VALUE_COLUMN + 200;
+
+// preload this resource for every page
+let sketchFont;
+function preload() {
+    sketchFont = loadFont('../assets/SourceCodePro-Medium.ttf');    
+}
+
 // return the sqdist between c and segment ab
 function sqDistPointSegment(a, b, c) {
     let ab = p5.Vector.sub(b, a);
@@ -36,10 +45,10 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
             if (is_selected)
                 strokeWeight(3);
             else
-                strokeWeight(2);
+                strokeWeight(3);
             
         } else {
-            strokeWeight(1);
+            strokeWeight(2);
         }
 
         push();
@@ -51,7 +60,7 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
         line(0, 0, this.vec.x * this.scale, this.vec.y * this.scale);
         if (this.is_pickable) {
             rotate(this.vec.heading());
-            let arrowSize = 7;
+            let arrowSize = 12;
             translate((this.vec.mag() * this.scale) - arrowSize, 0);
             triangle(0, arrowSize / 2, 0, 
                 -arrowSize / 2, arrowSize, 0);
@@ -61,15 +70,14 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
     };
     
     this.printVec2 = function (increment) {
-        noStroke();
+        strokeWeight(1);
+        stroke(this.col);
         fill(this.col);
 
         let y = getTextY(increment);
-        text("" + this.vec.x.toFixed(2) + ", " + this.vec.y.toFixed(2) + "", 10, y);
+        text("" + this.vec.x.toFixed(2) + ", " + this.vec.y.toFixed(2) + "", VALUE_COLUMN, y);
 
-        strokeWeight(1);
-        stroke(this.col);
-        text(this.label, 250, y);
+        text(this.label, LABEL_COLUMN, y);
     };
 
     this.clickTest = function () {
@@ -85,24 +93,23 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
 }
 
 function printScalar(increment, col, scalar, label) {
-    noStroke();
+    strokeWeight(1);
+    stroke(col);
     fill(col);
 
     let y = getTextY(increment);
-    text(scalar.toFixed(2), 10, y);
+    text(scalar.toFixed(2), VALUE_COLUMN, y);
 
-    stroke(col);
-    strokeWeight(1);
-    text(label, 250, y);
+    text(label, LABEL_COLUMN, y);
 }
 
 // convention to increment text vertically
 function getTextY(increment) {
-    return 10 + (increment * 25);
+    return 0 + (increment * 22);
 }
 
 function setupCommon() {
-    createCanvas(640, 480);
+    createCanvas(640, 680);
     textSize(18);
 }
 
@@ -176,7 +183,7 @@ function centeredPVectorFromMouse() {
 
     // constrain vector length to sketch window
     let c = Math.min(mid.x, mid.y);
-    c *= 0.95;
+    c *= 0.65;
 
     if (v.mag() > c) {
         v.normalize();
@@ -204,7 +211,16 @@ function drawGrid() {
     }
 
     stroke(230);
-    drawGridStep(10, 1.0);
+    drawGridStep(20, 2.0);
+}
+
+function drawTextBackground(num_text_lines) {
+    textFont(sketchFont, 15);
+    stroke(192);
+    strokeWeight(3);
+    fill(255);
+    rect(-10, -10, width+20, getTextY(num_text_lines + 2));
+
 }
 
 // only call from setup()
