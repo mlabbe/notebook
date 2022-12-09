@@ -118,12 +118,7 @@ function pickTool() {
     this.currentSelection = null;
     this.clickables = [];
 
-    this.mousePressed = function () {
-
-        let clicked = [];
-        let has_any_been_clicked = false;
-
-        //let last_selection = this.currentSelection;
+    this.mousePressed = function () {        
         this.currentSelection = null;
 
         for (let i = 0; i < this.clickables.length; i++) {
@@ -131,11 +126,6 @@ function pickTool() {
 
             if (was_clicked) {
                 this.currentSelection = this.clickables[i];
-                /*
-                // selecting the current selection is just clicking to de-select
-                if (last_selection !== this.clickables[i])
-                    this.currentSelection = this.clickables[i];
-                    */
                 break;
             }
         }
