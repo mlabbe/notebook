@@ -4,6 +4,8 @@ let b = null;
 let c_color = null;
 let pick_tool = null;
 
+
+
 function setup() {
     setupCommon();
 
@@ -19,10 +21,18 @@ function setup() {
     pick_tool.clickables = [a, b];
 }
 
-function mouseClicked() {
-
-    pick_tool.mouseClicked();
+function mousePressed() {
+    pick_tool.mousePressed();
 }
+
+function mouseReleased() {
+    pick_tool.mouseReleased();
+}
+
+function touchMoved() {
+    return pick_tool.shouldPreventScrolling();
+}
+
 
 function draw() {
     drawGrid();
@@ -47,15 +57,15 @@ function draw() {
     //
     // graph 'em
     //
-    a.printVec2(1);
     a.drawCentered(pick_tool.getCurrentSelection() == a);
-
-    b.printVec2(2);
     b.drawCentered(pick_tool.getCurrentSelection() == b);
 
+    drawTextBackground(4);
+    
+    a.printVec2(1);
+    b.printVec2(2);
     printScalar(3, a_dot_b.col, signed_length, "dot(a, b)");
 
     a_dot_b.printVec2(4);
     a_dot_b.drawCentered(false);
-
 }

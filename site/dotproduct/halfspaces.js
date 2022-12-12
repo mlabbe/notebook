@@ -30,8 +30,27 @@ function setup() {
     pick_tool.clickables = [a, b];
 }
 
-function mouseClicked() {
-    pick_tool.mouseClicked();
+
+function mousePressed() {
+    pick_tool.mousePressed();
+}
+
+function mouseReleased() {
+    pick_tool.mouseReleased();
+}
+
+function touchMoved() {
+    return pick_tool.shouldPreventScrolling();
+}
+
+function set_color_for_sign(d) {
+    if (d < 0) {
+        fill(negative_color);
+        stroke(negative_color);
+    } else {
+        fill(positive_color);
+        stroke(positive_color);    
+    }
 }
 
 
@@ -52,38 +71,33 @@ function draw() {
     a.vec.normalize();
     a_dot_b = p5.Vector.dot(a.vec, b.vec);
 
-//    noStroke();
 
+    //
+    // graph 'em 'em
+    //
     a.drawCentered(pick_tool.getCurrentSelection() === a);
-        
     b.drawCentered(pick_tool.getCurrentSelection() === b);    
+
 
     // draw halfspace boundary
     let cross_top = createVector(a.vec.y, -a.vec.x);
-    
     cross_top.mult(1000);
-
     let cross_bottom = createVector(-cross_top.x, -cross_top.y);
     cross_bottom.add(mid);
 
     cross_top.add(mid);
-
-    fill(0);
-    text(a_dot_b.toFixed(2) + " dot(a, b)", 10, 25);
-
-    noStroke();
-
-    if (a_dot_b < 0) {
-        fill(negative_color);
-        text("negative back-facing halfspace", 10, 50);
-        stroke(negative_color);
-    } else {
-        fill(positive_color);
-        text("positive front-facing halfspace", 10, 50);
-        stroke(positive_color);
-    }
-    
     strokeWeight(2);
+    set_color_for_sign(a_dot_b);
     line(mid.x, mid.y, cross_top.x, cross_top.y);
     line(mid.x, mid.y, cross_bottom.x, cross_bottom.y);
+
+    drawTextBackground(2);
+    printScalar(1, 0, a_dot_b, "dot(a, b)");
+    set_color_for_sign(a_dot_b);
+    if (a_dot_b < 0) {
+        text("negative back-facing halfspace", VALUE_COLUMN, 50);
+    } else {
+        text("positive front-facing halfspace", VALUE_COLUMN, 50);
+    }
+    
 }
