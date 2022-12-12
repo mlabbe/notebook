@@ -21,15 +21,19 @@ let selectionMode = SelectionModes.None;
 
 let selectedSdfPoint = null;
 
+const INFLUENCE_STEP = 0.02;
+
 function sdfPoint(startX, startY) {
 
     // just for ui selection
-    this.selectionCenterRadius = 4;
+    this.selectionCenterRadius = 6;
 
     // the actual radius of effect
     this.sdfRadius = this.selectionCenterRadius;
     
     this.origin = createVector(startX, startY);
+
+    this.influenceWeight = createVector(0, 1);
 
     this.enabled = true;
 
@@ -37,6 +41,28 @@ function sdfPoint(startX, startY) {
         if (!this.enabled)
             return;
 
+        //
+        // draw influence vectors
+        if (is_selected) {
+            const INFLUENCE_SCALE = 30.0;
+            strokeWeight(2);
+            stroke(100, 100, 192);
+            line(this.origin.x, this.origin.y,
+              this.origin.x + (this.influenceWeight.x * INFLUENCE_SCALE), this.origin.y);
+            line(this.origin.x, this.origin.y,
+              this.origin.x, this.origin.y + (this.influenceWeight.y * INFLUENCE_SCALE));
+        }
+
+        //
+        // draw outer influence circle
+        stroke(192);
+        fill(192, 192, 192, 32);
+        //noFill();
+        circle(this.origin.x, this.origin.y,
+               this.sdfRadius * 2);            
+
+        //
+        // draw selection center radius
         noStroke();
         if (is_selected) {
             fill(selectedColor);
@@ -46,11 +72,7 @@ function sdfPoint(startX, startY) {
         circle(this.origin.x, this.origin.y,
                this.selectionCenterRadius * 2);
 
-        stroke(192);
-        fill(192, 192, 192, 32);
-        //noFill();
-        circle(this.origin.x, this.origin.y,
-               this.sdfRadius * 2);
+
     }
 
     this.setRadiusFromPoint = function(x, y) {
@@ -130,7 +152,9 @@ function influencePointBySdfPoints(pt) {
         if (diff < 0)
             continue;
 
-        let influence = createVector(delta.x * ratio, delta.y * ratio);
+        let influence = createVector(
+            delta.x * ratio * sdf.influenceWeight.x, 
+            delta.y * ratio * sdf.influenceWeight.y);
         pt = p5.Vector.sub(pt, influence);
     }
 
@@ -194,23 +218,51 @@ function mouseReleased() {
     }
 }
 
+
 function keyReleased() {
-    if (keyCode == DELETE) {
-        if (selectedSdfPoint !== null) {
-            selectedSdfPoint.enabled = false;
-            selectedSdfPoint = null;
-        }
-    } else if (keyCode == 86 /* v */) {
+    
+    if (keyCode == 86 /* v */) {
         visSdfPoints = !visSdfPoints;
     }
 
-    
 
+    if (selectedSdfPoint) {
+        if (keyCode == DELETE) {
+            selectedSdfPoint.enabled = false;
+
+            if (sdfPoints.length > 0) {
+
+                // find last enabled one
+                let found = false;
+                for (i = sdfPoints.length - 1; i >= 0; i--) {
+                    if (sdfPoints[i].enabled) {                        
+                        selectedSdfPoint = sdfPoints[i];
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                    selectedSdfPoint = null;
+
+
+            } else {
+                selectedSdfPoint = null;
+            }
+        } 
+    }
 
 }
 
 function draw(is_selected) {
     drawGrid();
+
+    if (selectedSdfPoint && keyIsPressed) {
+        if (key == '1') {
+            selectedSdfPoint.influenceWeight.y -= INFLUENCE_STEP;
+        } else if (key == '2') {
+            selectedSdfPoint.influenceWeight.y += INFLUENCE_STEP;
+        }
+    }    
 
     if (visSdfPoints) {
         for (let i = 0; i < sdfPoints.length; i++) {
@@ -233,5 +285,6 @@ function draw(is_selected) {
     }
     
     drawPointsAsLine(points);
+
     
 }
