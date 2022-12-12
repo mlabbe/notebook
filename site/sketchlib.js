@@ -1,7 +1,7 @@
 let draw_labels_on_sketch_vectors = false;
 
-let VALUE_COLUMN = 140;
-let LABEL_COLUMN = VALUE_COLUMN + 200;
+const VALUE_COLUMN = 140;
+const LABEL_COLUMN = VALUE_COLUMN + 200;
 
 // preload this resource for every page
 let sketchFont;
@@ -222,4 +222,8 @@ function getNextColor() {
         static_color_index = 0;
 
     return colors[static_color_index++];
+}
+
+function vecFromMouse() {
+    return createVector(mouseX, mouseY);
 }
