@@ -100,6 +100,22 @@ function clickTestSdfPoints() {
     return null;
 }
 
+function luaLog(pts) {    
+    s = "";
+    for (let i = 0; i < pts.length; i++) {
+        let pt = pts[i];
+        s += "-- " + i + "\n"
+         + "advance_timeline(" + pt.origin.x + ")\n"
+         + "height_displacement{\n" + 
+         "  y = " + pt.origin.y + ",\n" +
+         "  radius = " + pt.sdfRadius + ",\n" +
+         "  weight = " + pt.influenceWeight.y + ",\n" +
+         "}\n";
+    }
+
+    console.log(s);
+}
+
 function setup() {
     setupCommon();
 
@@ -220,14 +236,22 @@ function mouseReleased() {
 
 
 function keyReleased() {
-    
+    if (keyCode == 76 /* l */) {
+        console.log("logging");        
+        luaLog(sdfPoints);
+    }
+
     if (keyCode == 86 /* v */) {
         visSdfPoints = !visSdfPoints;
     }
 
-
+    if (keyCode == 67 /* c */) {
+        selectedSdfPoint.enabled = false;
+        sdfPoints = [];    
+    }
+    
     if (selectedSdfPoint) {
-        if (keyCode == DELETE) {
+        if (keyCode == DELETE || keyCode == BACKSPACE) {
             selectedSdfPoint.enabled = false;
 
             if (sdfPoints.length > 0) {
