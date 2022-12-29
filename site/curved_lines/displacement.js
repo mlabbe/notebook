@@ -1,6 +1,7 @@
 
 // in pixels, vs width
 let POINT_LENGTH = 10;
+let GAME_SEG_LENGTH = 3;
 let num_points =  0;
 
 let points = [];
@@ -100,15 +101,37 @@ function clickTestSdfPoints() {
     return null;
 }
 
-function luaLog(pts) {    
+function luaLog(pts) {
+
+
     s = "";
     for (let i = 0; i < pts.length; i++) {
         let pt = pts[i];
+
+        if (!pt.enabled)
+            continue;
+
+        // in-game timeline is 1 unit per segment
+        let editor_pixels_to_segment_number = function(n) { return n / POINT_LENGTH };
+        // radius of 3 touches one segment in-game but a radius of 10 touches one segment in editor
+        let editor_pixels_to_game_scale = function(n) { return n * (GAME_SEG_LENGTH / POINT_LENGTH) };
+
+        // scale from editor pixels to timeline (segment number)
+        let timeline_x = editor_pixels_to_segment_number(pt.origin.x);
+
+        // y screen height midpoint is now 0 (and to scale with segment number)
+        let y = editor_pixels_to_game_scale((height / 2) - pt.origin.y);
+    
+        // radius is in game scale 
+        let radius = editor_pixels_to_game_scale(pt.sdfRadius);
+
+        console.log(pt.sdfRadius);
+
         s += "-- " + i + "\n"
-         + "advance_timeline(" + pt.origin.x + ")\n"
+         + "set_timeline(" + timeline_x + ")\n"
          + "height_displacement{\n" + 
-         "  y = " + pt.origin.y + ",\n" +
-         "  radius = " + pt.sdfRadius + ",\n" +
+         "  y = " + y + ",\n" +
+         "  radius = " + radius + ",\n" +
          "  weight = " + pt.influenceWeight.y + ",\n" +
          "}\n";
     }
@@ -196,6 +219,10 @@ function mousePressed() {
     }
 
     if (selectionMode == SelectionModes.None && !clickedOnExisting) {
+        if (mouseX < 0 || mouseX > width ||
+            mouseY < 0 || mouseY > height)
+            return;
+
         selectionMode = SelectionModes.CreateNewPoint;
         selectedSdfPoint = new sdfPoint(mouseX, mouseY);
         sdfPoints.push(selectedSdfPoint);
@@ -246,7 +273,8 @@ function keyReleased() {
     }
 
     if (keyCode == 67 /* c */) {
-        selectedSdfPoint.enabled = false;
+        if (selectedSdfPoint != null)
+            selectedSdfPoint.enabled = false;
         sdfPoints = [];    
     }
     
