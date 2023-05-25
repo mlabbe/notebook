@@ -126,6 +126,10 @@ function pickTool() {
 
             if (was_clicked) {
                 this.currentSelection = this.clickables[i];
+
+                if (this.currentSelection.onSelectedCallback != null) {
+                    this.currentSelection.onSelectedCallback();
+                }
                 break;
             }
         }
