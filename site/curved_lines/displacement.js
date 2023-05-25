@@ -244,7 +244,6 @@ function mouseDragged() {
     if (selectionMode == SelectionModes.MoveExistingPoint) {
         selectedSdfPoint.origin = vecFromMouse();
     }
-
 }
 
 function mouseReleased() {

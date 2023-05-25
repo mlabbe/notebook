@@ -1,4 +1,4 @@
-let INTERVAL_HEIGHT_OFFSET = 60;
+let INTERVAL_HEIGHT_OFFSET = 140;
 
 let pick_tool = null;
 
@@ -9,15 +9,37 @@ let intervals_b = null;
 function setup() {
     setupCommon();
 
+    /*
     intervals_a = [
-        input_interval(10, 200, true),
-        input_interval(320, 550, true),
+        inputInterval(10, 200, true),
+        inputInterval(320, 400, true),        
+        //inputInterval(450, 500, true),
+
+        inputInterval(500, 600, true),
+        inputInterval(620, 630, true)                    
+        
     ];
     intervals_b = [
-        input_interval(40, 200, false),
-        input_interval(280, 450, false),
-        input_interval(500, 600, false)    
+        inputInterval(40, 200, false),
+        inputInterval(280, 450, false),
+
+        //inputInterval(500, 600, false),
+        //inputInterval(620, 630, false)                    
+
     ];
+    */
+    intervals_a = [
+        inputInterval(10, 200, true),
+        inputInterval(300, 350, true),
+    ];
+
+    intervals_b = [
+        inputInterval(10, 150, false),
+        inputInterval(170, 250, false),
+
+        inputInterval(400, 450, false),        
+    ];
+
 
     pick_tool = new pickTool();
     for (let i = 0; i < intervals_a.length; i++) {
@@ -41,6 +63,17 @@ function touchMoved() {
     return pick_tool.shouldPreventScrolling();
 }
 
+// check if pt is in a set of intervals, excluding a single interval from the check
+function pt_in_interval_set(pt, interval_set, exclude_interval) {
+    for (let i = 0; i < interval_set.length; i++) {
+        if (interval_set[i] == exclude_interval)
+            continue;
+
+        if (pt >= interval_set[i].i0 && pt <= interval_set[i].i1)
+            return true;
+    }
+    return false;
+}
 
 // interval type
 function interval(i0, i1, y, col, is_pickable) {
@@ -99,7 +132,15 @@ function interval(i0, i1, y, col, is_pickable) {
             this.selectedFeature = 1;
     }
 
-    this.move = function() {
+    this.move = function(belong_set) {
+
+        // ensure new point is not in existing interval
+
+        // todo: constrain pt more than mouseX  or it snaps to previous interval
+        if (pt_in_interval_set(mouseX, belong_set, this)) {
+            return;
+        }
+
         if (this.selectedFeature == 0) {
             this.i0 = mouseX;
         } else if (this.selectedFeature == 1) {
@@ -122,7 +163,7 @@ function interval(i0, i1, y, col, is_pickable) {
         let mid = height / 2;
         let half_height = INTERVAL_HEIGHT_OFFSET - 4; // so it doesn't quite overlap 
 
-        rect(this.i0, mid - half_height, this.i1, half_height * 2);
+        rect(this.i0, mid - half_height, this.i1 - this.i0, half_height * 2);
     }
 
     this.dump = function() {
@@ -131,20 +172,82 @@ function interval(i0, i1, y, col, is_pickable) {
 }
 
 // one of the purple lines
-function input_interval(i0, i1, upper) {
+function inputInterval(i0, i1, upper) {
     let y = height / 2;
 
     y -= upper ? INTERVAL_HEIGHT_OFFSET : -INTERVAL_HEIGHT_OFFSET;
 
-    return new interval(i0, i1, y, "#AE5CD8", true);
+    let inter = new interval(i0, i1, y, "#AE5CD8", true);
+    inter.upper = upper;
+
+    return inter;
 }
 
 // a comparative interval, visualized as a box
-function diff_interval(i0, i1, is_a_overlap_b) {
+function ctorDiffInterval(i0, i1, is_a_overlap_b) {
 
     let col = is_a_overlap_b ? "#C30F0F" : "#0FC335";
 
     return new interval(i0, i1, 0, col, false);
+}
+
+function compareIntervals(int_a, int_b) {
+    
+    let diff_set = [];
+
+    let length = Math.min(int_a.length, int_b.length);
+
+    for (let i = 0; i < length; i++) {
+
+        // a start is less than b start
+        if (int_a[i].i0 < int_b[i].i0) {
+            diff_set.push(ctorDiffInterval(int_a[i].i0, int_b[i].i0, true));
+        }
+
+        // b start is less than a start
+        if (int_a[i].i0 > int_b[i].i0) {
+               diff_set.push(ctorDiffInterval(
+                int_b[i].i0, 
+                int_a[i].i0, 
+                false));
+        }
+
+        // a end is less than b end
+        if (int_a[i].i1 < int_b[i].i1) {
+            diff_set.push(ctorDiffInterval(int_a[i].i1, int_b[i].i1, false));
+        }
+
+        // b end is less than b start
+        if (int_a[i].i1 > int_b[i].i1) {
+            diff_set.push(ctorDiffInterval(int_b[i].i1, int_a[i].i1, true));
+        }    
+    }
+
+    // go through and clip each one
+    for (let i = 1; i < diff_set.length; i++) {
+        let j = i - 1;
+        if (diff_set[i].i0 < diff_set[j].i1) {
+            diff_set[i].i0 = diff_set[j].i1;
+        }
+    }
+
+    //console.log("dump");
+    //dumpIntervalSet(diff_set);
+
+    // if one interval set is larger than the other, all remaining intervals
+    // are added as differences
+    /*
+    if (int_b.length > int_a.length) {
+        for (let i = int_a.length; i < int_b.length; i++) {
+            diff_set.push(ctorDiffInterval(int_b[i].i0, int_b[i].i1, false));
+        }
+    } else if (int_a.length > int_b.length) {
+        for (let i = int_b.length; i < int_a.length; i++) {
+            diff_set.push(ctorDiffInterval(int_a[i].i0, int_a[i].i1, true));
+        }
+    }
+*/
+    return diff_set;
 }
 
 function drawMidpoint() {
@@ -161,7 +264,7 @@ function drawIntervalSet(intervalSet) {
     }
 }
 
-function dump_interval_set(iset) {
+function dumpIntervalSet(iset) {
     for (let i = 0; i < iset.length; i++) {
         iset[i].dump();
     }
@@ -169,7 +272,10 @@ function dump_interval_set(iset) {
 
 function keyReleased() {
     if (keyCode == 76 /* l */) {
-        dump_interval_set(intervals_a);
+        console.log("a");
+        dumpIntervalSet(intervals_a);
+        console.log("b");
+        dumpIntervalSet(intervals_b);   
     }
 }
 
@@ -179,7 +285,9 @@ function draw() {
 
     let selected_interval = pick_tool.getCurrentSelection();
     if (selected_interval != null) {
-        selected_interval.move();
+        let belong_set = selected_interval.upper ? intervals_a : intervals_b;
+
+        selected_interval.move(belong_set);
         // todo: enforce no overlap
     }
 
@@ -189,9 +297,14 @@ function draw() {
     //
     // actual math here
     //
-    let a_no_overlap_b = [
-        diff_interval(10, 30, true),
-    ];
+
+    let diff = compareIntervals(intervals_a, intervals_b);
+    //console.log("dump");
+    //dumpIntervalSet(diff);
+
+    //let a_no_overlap_b = [
+    //    diff_interval(10, 30, true),
+    //];
 
     //
     // draw intervals
@@ -201,5 +314,10 @@ function draw() {
     drawIntervalSet(intervals_a);
     drawIntervalSet(intervals_b);
 
-    a_no_overlap_b[0].drawAsBox();
+    for (let i = 0; i < diff.length; i++) {
+        diff[i].drawAsBox();
+
+    }
+
+    //a_no_overlap_b[0].drawAsBox();
 }
