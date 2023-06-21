@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mike's Notebook - Stipple Patterns</title>
+    <script defer src="../p5.min.js" content-type="text/javascript"></script>
+    <script defer src="../sketchlib.js" content-type="text/javascript"></script>
+    <script defer src="stipple.js" content-type="text/javascript"></script>    
+  </head>
+
+  <body>
+    # Mike's Viz Notebook #
+
+    Back to [table of contents](../index.html)
+
+    # Encoding Stipple Patterns in Bits #
+
+    As famously used by [glLineStipple](https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glLineStipple.xml),
+    a stipple pattern can be decoded from a sequence of bits.  
+
+    Each subsequent bit determines whether the next $n$ pixels are on or off.
+    This corresponds to the `factor` parameter in `glLineStipple()`.
+
+    # Interactive Demo #
+
+    <main id="canvas"></main>
+
+    # Pseudocode #
+~~~~~~~~~~~~~ c
+    u16 pattern = 0x5555;
+    u16 mask    = 0x8000; // set leftmost bit
+    for (int i = 0; i < 16; i++) {
+        int bit = (pattern & mask) != 0;
+        if (bit) 
+           set_pixel();
+        mask >>= 1;
+    }    
+~~~~~~~~~~~~~
+
+    [back](../index.html)    
+
+  </body>
+</html>
+<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="../markdeep.min.js" charset="utf-8"></script>

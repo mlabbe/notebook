@@ -109,8 +109,9 @@ function getTextY(increment) {
 }
 
 function setupCommon() {
-    createCanvas(640, 680);
+    
     textSize(18);
+    return createCanvas(640, 680);
 }
 
 function pickTool() {
