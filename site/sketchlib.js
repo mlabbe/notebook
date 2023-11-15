@@ -36,6 +36,7 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
     this.scale = scale;
     this.is_pickable = is_pickable;
     this.label = label;
+    this.stroke_weight = 0; // additional stroke weight
 
     this.drawCentered = function (is_selected) {
         let is_mouse_in_sketch = 
@@ -43,12 +44,12 @@ function sketchVectorFromVec(vec, col, scale, is_pickable, label) {
              mouseY > 0 && mouseY <= height);
         if (is_mouse_in_sketch && this.is_pickable) {
             if (is_selected)
-                strokeWeight(3);
+                strokeWeight(3 + this.stroke_weight);
             else
-                strokeWeight(3);
+                strokeWeight(3 + this.stroke_weight);
             
         } else {
-            strokeWeight(2);
+            strokeWeight(2 + this.stroke_weight);
         }
 
         push();

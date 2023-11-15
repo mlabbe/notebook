@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mike's Notebook - Fixed Point Approximate Distance</title>
+    <script defer src="../p5.min.js" content-type="text/javascript"></script>
+    <script defer src="../sketchlib.js" content-type="text/javascript"></script>
+    <script defer src="fixed_distance.js" content-type="text/javascript"></script>
+  </head>
+
+  <body>
+    # Mike's Viz Notebook #
+
+    Back to [table of contents](../index.html)
+
+    # Fixed Point Approximate Distance #
+
+    Quickly approximating 2D Euclidean distance $\sqrt{dx * dx + dy * dy}$ in fixed
+    point enables deterministic distance calculations between points.
+
+    *Graphics Gems* (1990) offers a fast approximation to 3D euclidean distance.  This method
+    provides a means for fixed integer math to quickly approximate the distance between two points
+    without a taylor series or otherwise falling back on non-deterministic floating point sqrt
+    implementations.
+
+    This example demonstrates this technique in 2D.  [View source](fixed_distance.js) for an implementation that uses
+    Javascript `BigInt` and demonstrates conversion to and from `Number` to a fixed integer system.
+
+    <main></main>
+
+    # Pseudocode #
+~~~~~~~~~~~~~ c
+    // approximate 2D vector 
+    int_vec2 a;
+    int out_approx_dist;
+    {
+        a = abs(a);
+
+        int sum = a.x + a.y;
+        if (a.x < a.y) 
+            out_approx_dist = sum - (a.x >> 1);
+        else
+            out_approx_dist = sum - (a.y >> 1);        
+    }
+~~~~~~~~~~~~~
+
+    [back](../index.html)    
+  </body>
+</html>
+<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="../markdeep.min.js" charset="utf-8"></script>
