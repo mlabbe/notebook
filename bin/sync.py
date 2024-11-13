@@ -1,11 +1,13 @@
+#!/usr/bin/python3
+
 import os
 import sys
 import os.path
 import subprocess
 
-PROFILE_NAME='default'
+PROFILE_NAME='ftg'
 S3_BUCKET='www.michaellabbe.com'
-DISTRIBUTION_ID='E208J8IRBWTAQW'
+DISTRIBUTION_ID='E28J2JY3HVJJ7M'
 
 def fatal(msg):
     print(msg, file=sys.stderr)
